@@ -46,7 +46,7 @@ class Repository:
     def create_user(self, username, email, password):
         for _, user in self.USERS.items():
             if user.username.title() == username:
-                raise Exception("Please choose another username. username:") #+ str(user.username) + "; email:" + str(user.email) + "; password:" + str(user.password)+"; cause of username:"+str(username)+"; email:"+str(email)+"; password: "+str(password))
+                raise Exception("Please choose another username.") #username:") + str(user.username) + "; email:" + str(user.email) + "; password:" + str(user.password)+"; cause of username:"+str(username)+"; email:"+str(email)+"; password: "+str(password))
             if user.email.lower() == email:
                 # raise exceptions.ExistingEmail() #offer to restore password
                 raise Exception("You already have an account with such email.")
@@ -68,6 +68,14 @@ class Repository:
     def get_user(self, id):
         return self.USERS[id]
 
+    def create_category(self, user_id, title, description):
+        for _, category in self.USERS[user_id].CATEGORIES.items():
+            if category.title == title:
+                raise Exception("Please choose another title")
+
+        category_id = self.USERS[user_id].create_category(title, description)
+        return category_id
+
 
 class User:
     CATEGORY_ID = 1
@@ -84,10 +92,12 @@ class User:
     def create_category(self, title, description):
         self.CATEGORIES[self.CATEGORY_ID] = Category(title, description)
         self.CATEGORY_ID += 1
+        return self.CATEGORY_ID - 1
 
     def create_cost(self, category_id, money):
         self.COSTS[self.COST_ID] = Cost(category_id, money)
         self.COST_ID += 1
+        return self.COST_ID - 1
 
     def get_costs(self):
         return self.COSTS
