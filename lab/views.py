@@ -6,7 +6,7 @@ def check_user_not_in_session(func):
     def inner(*args, **kwargs):
         if "current_user" not in session:
             return render_template("log_in.html")
-        func(*args, **kwargs)
+        return func(*args, **kwargs)
     inner.__name__ = func.__name__  # why?
     return inner
 
