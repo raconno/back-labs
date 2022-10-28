@@ -2,9 +2,13 @@ from lab import app, entities
 from flask import render_template, session, request, redirect, url_for
 
 
-def user_not_in_session():
-    if "current_user" not in session:
-        return render_template("log_in.html")
+def check_user_not_in_session(func):
+    def inner(*args, **kwargs):
+        if "current_user" not in session:
+            return render_template("log_in.html")
+        func(*args, **kwargs)
+    inner.__name__ = func.__name__  # why?
+    return inner
 
 
 @app.route("/")
@@ -13,10 +17,9 @@ def main():
 
 
 @app.route("/profile")
+@check_user_not_in_session
 def profile():
     entities.get_repo()
-    if user_not_in_session():
-        return user_not_in_session()
     return render_template("profile.html")
 
 
@@ -78,17 +81,14 @@ def log_out():
 
 
 @app.route("/create_category")
+@check_user_not_in_session
 def check_create_category():
-    if user_not_in_session():
-        return user_not_in_session()
     return render_template("create_category.html")
 
 
 @app.route("/create_category", methods=['POST'])
+@check_user_not_in_session
 def create_category():
-    if user_not_in_session():
-        return user_not_in_session()
-
     try:
         repository = entities.get_repo()
         category_id = repository.create_category(session["current_user"], request.form.get('title'), request.form.get('description'))
