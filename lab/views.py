@@ -15,7 +15,7 @@ def profile():
     return render_template("profile.html")
 
 
-@app.route("/signUp", methods=['GET'])
+@app.route("/sign_up", methods=['GET'])
 def check_sign_up():
     if "current_user" not in session:
         return render_template("sign_up.html")
@@ -23,7 +23,7 @@ def check_sign_up():
         return render_template("profile.html")
 
 
-@app.route("/signUp", methods=['POST'])
+@app.route("/sign_up", methods=['POST'])
 def sign_up():
     if "current_user" in session:
         return render_template("profile.html")
@@ -37,14 +37,14 @@ def sign_up():
     # POST: request.form.get('<key name>') #### GET: request.args.get('<key name>') #
 
 
-@app.route("/logIn")
+@app.route("/log_in")
 def check_log_in():
     if "current_user" in session:
         return render_template("profile.html")
     return render_template("log_in.html")
 
 
-@app.route("/logIn", methods=['POST'])
+@app.route("/log_in", methods=['POST'])
 def log_in():
     if "current_user" in session:
         return render_template("profile.html")
@@ -57,7 +57,7 @@ def log_in():
         return render_template("log_in.html", exeption=True, exep=str(e))
 
 
-@app.route("/logOut")
+@app.route("/log_out")
 def log_out():
     try:
         session.pop("current_user")

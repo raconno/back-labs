@@ -45,20 +45,20 @@ class Repository:
 
     def create_user(self, username, email, password):
         for _, user in self.USERS.items():
-            if user.username == username:
+            if user.username.title() == username:
                 raise Exception("Please choose another username. username:") #+ str(user.username) + "; email:" + str(user.email) + "; password:" + str(user.password)+"; cause of username:"+str(username)+"; email:"+str(email)+"; password: "+str(password))
-            if user.email == email:
+            if user.email.lower() == email:
                 # raise exceptions.ExistingEmail() #offer to restore password
                 raise Exception("You already have an account with such email.")
 
-        new_user = User(username, email, password)
+        new_user = User(username.title(), email.lower(), password)
         self.USERS[self.USER_ID] = new_user
         self.USER_ID += 1
         return self.USER_ID - 1
 
     def log_in(self, nick, password):
         for id, user in self.USERS.items():
-            if user.email == nick or user.username == nick:
+            if user.email.lower() == nick or user.username.title() == nick:
                 if user.password == password:
                     return id
                 else:
