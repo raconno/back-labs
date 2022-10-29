@@ -1,5 +1,6 @@
 from datetime import datetime
 from lab import exceptions
+from collections import defaultdict
 from flask import session
 
 
@@ -93,6 +94,19 @@ class User:
         self.CATEGORIES[self.CATEGORY_ID] = Category(title, description)
         self.CATEGORY_ID += 1
         return self.CATEGORY_ID - 1
+
+    def get_all_categories(self):
+        categories_dict = defaultdict(dict)
+        for id, category in self.CATEGORIES.items():
+            categories_dict[id] = {"title": category.title,
+                                   "description": category.description}
+        return categories_dict
+
+    def get_category_by_id(self, category_id):
+        category = self.CATEGORIES[category_id]
+        return {"title": category.title,
+                "description": category.description,
+                "costs": self.get_costs_in_category(category_id)}
 
     def create_cost(self, category_id, money):
         self.COSTS[self.COST_ID] = Cost(category_id, money)
