@@ -103,15 +103,36 @@ class User:
         return categories_dict
 
     def get_category_by_id(self, category_id):
+        if self.CATEGORIES.get(category_id) is None:
+            return False
         category = self.CATEGORIES[category_id]
         return {"title": category.title,
                 "description": category.description,
                 "costs": self.get_costs_in_category(category_id)}
 
+    def update_category(self, category_id, **kwargs):
+        for key, value in self.CATEGORIES[category_id].items():
+            if kwargs.get(key) is not None:
+                value = kwargs[key]
+                kwargs.pop(key)
+        return kwargs
+
+    def delete_category(self, category_id):
+        if self.CATEGORIES.get(category_id) is not None:
+            self.CATEGORIES.pop(category_id)
+            return True
+        else:
+            return False
+
     def create_cost(self, category_id, description, money):
         self.COSTS[self.COST_ID] = Cost(category_id, description, money)
         self.COST_ID += 1
         return self.COST_ID - 1
+
+    def get_cost_by_id(self, cost_id):
+        if self.COSTS.get(cost_id) is not None:
+            cost = self.COSTS.get(cost_id)
+            return {'id': cost_id, 'description': cost.description, 'money': cost.money}
 
     def get_costs_in_category(self, category_id):
         cost_list = []
@@ -120,8 +141,19 @@ class User:
                 cost_list.append({"id": cost_id, "description": cost.description, "money": cost.money})
         return cost_list
 
-    def get_costs(self):
-        return self.COSTS
+    def update_cost(self, cost_id, **kwargs):
+        for key, value in self.COSTS[cost_id].items():
+            if kwargs.get(key) is not None:
+                value = kwargs[key]
+                kwargs.pop(key)
+        return kwargs
+
+    def delete_cost(self, cost_id):
+        if self.COSTS.get(cost_id) is not None:
+            self.COSTS.pop(cost_id)
+            return True
+        else:
+            return False
 
 
 class Category:
