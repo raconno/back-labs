@@ -108,20 +108,20 @@ class User:
                 "description": category.description,
                 "costs": self.get_costs_in_category(category_id)}
 
-    def create_cost(self, category_id, money):
-        self.COSTS[self.COST_ID] = Cost(category_id, money)
+    def create_cost(self, category_id, description, money):
+        self.COSTS[self.COST_ID] = Cost(category_id, description, money)
         self.COST_ID += 1
         return self.COST_ID - 1
 
+    def get_costs_in_category(self, category_id):
+        cost_list = []
+        for cost_id, cost in self.COSTS.items():
+            if cost.category_id == category_id:
+                cost_list.append({"id": cost_id, "description": cost.description, "money": cost.money})
+        return cost_list
+
     def get_costs(self):
         return self.COSTS
-
-    def get_costs_in_category(self, category_id):
-        return_costs = []
-        for cost in self.COSTS:
-            if cost.category_id == category_id:
-                return_costs.append(cost)
-        return return_costs
 
 
 class Category:
@@ -131,7 +131,8 @@ class Category:
 
 
 class Cost:
-    def __init__(self, category_id, money):
+    def __init__(self, category_id, description, money):
         self.category_id = category_id
         self.creation_datetime = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        self.description = description
         self.money = money
