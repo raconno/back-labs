@@ -21,8 +21,9 @@ def main():
 @app.route("/profile")
 @check_user_not_in_session
 def profile():
-    entities.get_repo()
-    return render_template("profile.html")
+    repository = entities.get_repo()
+    user = repository.get_user(session['current_user'])
+    return render_template("profile.html", data=json.dumps(user.get_all_categories()))
 
 
 @app.route("/sign_up")

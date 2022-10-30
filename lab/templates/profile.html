@@ -9,8 +9,20 @@ Profile page
 <h1>Your profile!!</h1>
 
 <form action="create_category">
-    <input type="submit" value="Create category" />
+    <input type="submit" value="Create category"/>
 </form>
-<a href="create_category">Create category</a>
-
+<br>
+<div id="buttons"></div>
+<!--<a href="create_category">Create category</a>-->
+<script>
+    const data = JSON.parse({{data|default("")|tojson}});
+    var text = "";
+    for (var id in data) {
+        text += "<form method=\"POST\" action=\"/category\">\n"
+        text += "<input type=\"hidden\" id=\"id\" name=\"id\ value=\"" + id + "\">\n"
+        text += "<input type=\"submit\" value=\"" + data[id]["title"] + "\" />\n"
+        text += "</form>\n"
+    }
+    document.getElementById("buttons").innerHTML = text;
+</script>
 {%endblock%}
