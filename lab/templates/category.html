@@ -10,6 +10,10 @@ Category
 <h1 id="category"></h1>
 <b id="description"></b>
 <br><br>
+<form method="POST" action="delete_category" id="delete_category">
+    <input type="button" onclick="deleteCategory()" style='background-color:red' value="DELETE WITH ALL COST"/>
+</form>
+<br>
 <p id="costs"></p>
 <br>
 <form method="POST" action="create_cost" id="create_cost">
@@ -19,8 +23,8 @@ Category
 <script>
     const data = JSON.parse({{data|default("")|tojson}});
     var text = "";
-    data['costs'].forEach(function(obj) {
-                text += "<form method=\"POST\" action=\"/cost\">\n"
+    data['costs'].forEach(function (obj) {
+        text += "<form method=\"POST\" action=\"/cost\">\n"
         text += "<input type=\"hidden\" id=\"id\" name=\"id\ value=\"" + obj['id'] + "\">\n"
         text += "<input type=\"submit\" value=\"" + obj["money"] + "\" />\n"
         text += "</form>\n"
@@ -29,8 +33,16 @@ Category
     document.getElementById("category").innerHTML = "Category: " + data['title'].toString();
     document.getElementById("description").innerHTML = "Description: " + data['description'].toString();
     document.getElementById("costs").innerHTML = text;
-    create_cost = '    <input type="hidden" id=\"category_id\" name=\"category_id\" value="'+ data.id + '">\n' +
+    create_cost = '    <input type="hidden" id=\"category_id\" name=\"category_id\" value="'+ data['id'] + '">\n' +
                   '    <input type="submit" value="Create cost"/>\n'
     document.getElementById("create_cost").innerHTML = create_cost;
+
+    function deleteCategory() {
+        if (confirm('Are you sure you want to delete this category with all attached costs?')) {
+            document.getElementById("delete_category").innerHTML = '<input type="hidden" id=\"category_id\" name=\"category_id\" value="' + data.id + '">'
+            document.forms["delete_category"].submit();
+        }
+    }
+
 </script>
 {%endblock%}

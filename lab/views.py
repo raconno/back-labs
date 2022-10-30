@@ -110,3 +110,12 @@ def category():
     if not data:
         return redirect(url_for('profile'))
     return render_template("category.html", data=json.dumps(data))
+
+
+@app.route("/delete_category", methods=['POST'])
+@check_user_not_in_session
+def delete_category():
+    repository = entities.get_repo()
+    repository.delete_category(session['current_user'], request.form.get('category_id'))
+    return redirect(url_for('profile'))
+

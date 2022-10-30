@@ -81,6 +81,12 @@ class Repository:
         category_id = self.USERS[user_id].create_category(title, description)
         return category_id
 
+    def delete_category(self, user_id, category_id):
+        if self.USERS[user_id].CATEGORIES.get(category_id) is not None:
+            self.USERS[user_id].delete_category(category_id)
+            return True
+        return False
+
 
 class User:
     def __init__(self, username, email, password):
@@ -121,12 +127,12 @@ class User:
                 kwargs.pop(key)
         return kwargs
 
-    def delete_category(self, category_id):  # add deletion of all costs in category also
-        if self.CATEGORIES.get(category_id) is not None:
-            self.CATEGORIES.pop(category_id)
-            return True
-        else:
-            return False
+    def delete_category(self, category_id):
+        self.CATEGORIES.pop(category_id)
+        keys = self.COSTS.keys()
+        for cost_id in list(self.COSTS.keys()):
+            if self.COSTS[cost_id].category_id == category_id:
+                self.COSTS.pop(cost_id)
 
     def create_cost(self, category_id, description, money):
         self.COSTS[str(self.COST_ID)] = Cost(str(category_id), description, str(money))
