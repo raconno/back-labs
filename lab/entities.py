@@ -106,7 +106,8 @@ class User:
         if self.CATEGORIES.get(category_id) is None:
             return False
         category = self.CATEGORIES[category_id]
-        return {"title": category.title,
+        return {"id": category_id,
+                "title": category.title,
                 "description": category.description,
                 "costs": self.get_costs_in_category(category_id)}
 
