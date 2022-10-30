@@ -16,17 +16,16 @@ Profile page
     const data = JSON.parse({{data|default("")|tojson}});
     var text = "";
     for (var category in data) {
-        // alert(data[category]['title'])
         text += "<br>\n" +
             "<form method=\"POST\" action=\"category\">\n" +
             "    <input type=\"hidden\" id=\"id\" name=\"id\" value=\"" + data[category]['id'] + "\"/>\n" +
-            "    <input type=\"submit\" value=\""+ data[category]['title'] +"\">\n" +
+            "    <input type=\"submit\" value=\"" + data[category]['title'] + "\">\n" +
             "</form>\n" +
             "<br>"
-        for(var cost in data[category]['costs']){
+        for (var cost in data[category]['costs']) {
             text += "<form method=\"POST\" action=\"cost\">\n" +
                 "    <input type=\"hidden\" id=\"cost_id\" name=\"cost_id\" value=\"" + data[category]['costs'][cost]['id'] + "\">\n" +
-                "    <input style=\"margin-left: 33px\" type=\"submit\" value=\""+ data[category]['costs'][cost]['money'] +"\">\n" +
+                "    <input style=\"margin-left: 33px\" type=\"submit\" value=\"" + data[category]['costs'][cost]['money'] + "\">\n" +
                 "</form>\n" +
                 "<br>"
         }
