@@ -44,6 +44,7 @@ Category
     document.getElementById("category_description").innerHTML = "Description: " + data['description'].toString();
     document.getElementById("costs").innerHTML = text;
     create_cost = '    <input type="hidden" id=\"category_id\" name=\"category_id\" value="'+ data['id'] + '">\n' +
+                  '    <input type="hidden" id="from_category_page" name="from_category_page" value=1/>\n' +
                   '    <input type="submit" value="Create cost"/>\n'
     document.getElementById("create_cost").innerHTML = create_cost;
 

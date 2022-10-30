@@ -101,7 +101,7 @@ class Repository:
         return all
 
     def update_cost(self, user_id, cost_id, money, description):
-        if self.USERS[user_id].CATEGORIES.get(cost_id) is not None:
+        if self.USERS[user_id].COSTS.get(str(cost_id)) is not None:
             self.USERS[user_id].update_cost(cost_id, money, description)
 
 
@@ -169,8 +169,9 @@ class User:
         return cost_list
 
     def update_cost(self, cost_id, money, description):
-        self.COSTS[cost_id].money = money
-        self.COSTS[cost_id].description = description
+        print("IN USER")
+        self.COSTS[str(cost_id)].money = str(money)
+        self.COSTS[str(cost_id)].description = description
 
     def delete_cost(self, cost_id):
         if self.COSTS.get(cost_id) is not None:

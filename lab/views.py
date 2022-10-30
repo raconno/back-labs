@@ -184,8 +184,24 @@ def update_cost():
     description = request.form.get('description')
     if request.form.get('from_cost_page'):
         return render_template("update_cost.html", data=json.dumps({"cost_id": cost_id,
-                                                                        "money": money,
-                                                                        "description": description}))
+                                                                    "money": money,
+                                                                    "description": description}))
     repository = entities.get_repo()
     repository.update_cost(session["current_user"], cost_id, money, description)
+    print("cost_id " + cost_id)
+    print("money " + money)
+    print("description " + description)
+    return redirect(url_for('profile'))
+
+
+@app.route("/create_cost", methods=['POST'])
+@check_user_not_in_session
+def create_cost():
+    if request.form.get('from_category_page'):
+        return render_template("create_cost.html", data=json.dumps({'category_id': request.form.get('category_id')}))
+
+    repository = entities.get_repo()
+    repository.USERS[session["current_user"]].create_cost(request.form.get('category_id'),
+                                                          request.form.get('description'),
+                                                          request.form.get('money'))
     return redirect(url_for('profile'))
