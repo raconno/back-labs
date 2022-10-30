@@ -87,6 +87,13 @@ class Repository:
             return True
         return False
 
+    def update_category(self, user_id, category_id, title, description):
+        if self.USERS[user_id].CATEGORIES.get(category_id) is not None:
+            for _, category in self.USERS[user_id].CATEGORIES.items():
+                if category.title == title:
+                    raise Exception("Please choose another title")
+            self.USERS[user_id].update_category(category_id, title, description)
+
 
 class User:
     def __init__(self, username, email, password):
@@ -120,12 +127,9 @@ class User:
                 "description": category.description,
                 "costs": self.get_costs_in_category(category_id)}
 
-    def update_category(self, category_id, **kwargs):
-        for key, value in self.CATEGORIES[category_id].items():
-            if kwargs.get(key) is not None:
-                value = kwargs[key]
-                kwargs.pop(key)
-        return kwargs
+    def update_category(self, category_id, title, description):
+        self.CATEGORIES[category_id].title = title
+        self.CATEGORIES[category_id].description = description
 
     def delete_category(self, category_id):
         self.CATEGORIES.pop(category_id)

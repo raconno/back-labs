@@ -95,7 +95,7 @@ def create_category():
     try:
         repository = entities.get_repo()
         category_id = repository.create_category(session["current_user"], request.form.get('title'), request.form.get('description'))
-        return redirect(url_for('category', category_id=category_id))
+        return redirect(url_for('profile'))
     except Exception as e:
         return render_template("create_category.html", data=json.dumps({"exeption": True, "exep": str(e)}))
 
@@ -118,4 +118,27 @@ def delete_category():
     repository = entities.get_repo()
     repository.delete_category(session['current_user'], request.form.get('category_id'))
     return redirect(url_for('profile'))
+
+
+
+@app.route("/update_category", methods=['POST'])
+@check_user_not_in_session
+def update_category():
+    category_id = request.form.get('category_id')
+    title = request.form.get('title')
+    description = request.form.get('description')
+    if request.form.get('from_category_page'):
+        return render_template("update_category.html", data=json.dumps({"category_id": category_id,
+                                                                        "title": title,
+                                                                        "description": description}))
+    try:
+        repository = entities.get_repo()
+        category_id = repository.update_category(session["current_user"], category_id, title, description)
+        return redirect(url_for('profile'))
+    except Exception as e:
+        return render_template("update_category.html", data=json.dumps({"category_id": category_id,
+                                                                        "title": title,
+                                                                        "description": description,
+                                                                        "exeption": True,
+                                                                        "exep": str(e)}))
 

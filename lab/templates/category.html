@@ -8,10 +8,17 @@ Category
 <a href="profile" class='d-flex justify-content-end'>Profile</a>
 
 <h1 id="category"></h1>
-<b id="description"></b>
+<b id="category_description"></b>
 <br><br>
 <form method="POST" action="delete_category" id="delete_category">
     <input type="button" onclick="deleteCategory()" style='background-color:red' value="DELETE WITH ALL COST"/>
+</form>
+<form method="POST" action="update_category" id="update_category">
+    <input type="hidden" id="category_id" name="category_id"/>
+    <input type="hidden" id="title" name="title"/>
+    <input type="hidden" id="description" name="description"/>
+    <input type="hidden" id="from_category_page" name="from_category_page" value=1/>
+    <input type="submit" style='background-color:green' value="Update"/>
 </form>
 <br>
 <p id="costs"></p>
@@ -22,6 +29,9 @@ Category
 <div id="buttons"></div>
 <script>
     const data = JSON.parse({{data|default("")|tojson}});
+    document.getElementById("category_id").value = data["id"]
+    document.getElementById("title").value = data["title"]
+    document.getElementById("description").value = data["description"]
     var text = "";
     data['costs'].forEach(function (obj) {
         text += "<form method=\"POST\" action=\"/cost\">\n"
@@ -31,7 +41,7 @@ Category
 
     })
     document.getElementById("category").innerHTML = "Category: " + data['title'].toString();
-    document.getElementById("description").innerHTML = "Description: " + data['description'].toString();
+    document.getElementById("category_description").innerHTML = "Description: " + data['description'].toString();
     document.getElementById("costs").innerHTML = text;
     create_cost = '    <input type="hidden" id=\"category_id\" name=\"category_id\" value="'+ data['id'] + '">\n' +
                   '    <input type="submit" value="Create cost"/>\n'
