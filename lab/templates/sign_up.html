@@ -5,11 +5,12 @@ Sign up
 {%endblock%}
 
 {% block body%}
-{% if exeption %}
 <script>
-      alert("{{exep}}");
+  const data = JSON.parse({{data|default("")|tojson}});
+  if(data.exeption) {
+    alert(data.exep);
+  }
 </script>
-{% endif %}
 <h1>Sign up</h1>
 
 <form method="POST" action="/sign_up">

@@ -1,3 +1,4 @@
+import json
 from lab import app, entities
 from flask import render_template, session, request, redirect, url_for
 
@@ -45,7 +46,7 @@ def sign_up():
         session['current_user'] = repository.create_user(request.form.get('username'), request.form.get('email'), request.form.get('password'))
         return redirect(url_for('profile'))
     except Exception as e:
-        return render_template("sign_up.html", exeption=True, exep=str(e))
+        return render_template("sign_up.html", data=json.dumps({"exeption": True, "exep": str(e)}))
     # POST: request.form.get('<key name>') #### GET: request.args.get('<key name>') #
 
 
@@ -68,7 +69,7 @@ def log_in():
         session["current_user"] = repository.log_in(request.form.get('email'), request.form.get('password'))
         return render_template("profile.html")
     except Exception as e:
-        return render_template("log_in.html", exeption=True, exep=str(e))
+        return render_template("log_in.html", data=json.dumps({"exeption": True, "exep": str(e)}))
 
 
 @app.route("/log_out")
@@ -94,7 +95,7 @@ def create_category():
         category_id = repository.create_category(session["current_user"], request.form.get('title'), request.form.get('description'))
         return redirect(url_for('category', category_id=category_id))
     except Exception as e:
-        return render_template("create_category.html", exeption=True, exep=str(e))
+        return render_template("create_category.html", data=json.dumps({"exeption": True, "exep": str(e)}))
 
 
 @app.route("/category")

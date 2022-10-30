@@ -5,11 +5,13 @@ Log in
 {%endblock%}
 
 {% block body%}
-{% if exeption %}
 <script>
-      alert("{{exep}}");
+  const data = JSON.parse({{data|default("")|tojson}});
+  if(data.exeption) {
+    alert(data.exep);
+  }
 </script>
-{% endif %}
+
 <h1>Log in</h1>
 
 <form method="POST" action="/log_in">
