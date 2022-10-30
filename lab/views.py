@@ -27,7 +27,7 @@ def page_not_found(e):
 @check_user_not_in_session
 def profile():
     repository = entities.get_repo()
-    user = repository.get_user(session['current_user'])
+    user = repository.USERS[session['current_user']]
     return render_template("profile.html", data=json.dumps(user.get_all_categories()))
 
 
@@ -109,7 +109,7 @@ def create_category():
 @check_user_not_in_session
 def category():
     repository = entities.get_repo()
-    user = repository.get_user(session['current_user'])
+    user = repository.USERS[session['current_user']]
     category_id = request.form.get('id')
     data = user.get_category_by_id(category_id)
     if not data:
@@ -159,7 +159,7 @@ def all_costs():
 @check_user_not_in_session
 def cost():
     repository = entities.get_repo()
-    user = repository.get_user(session['current_user'])
+    user = repository.USERS[session['current_user']]
     cost_id = request.form.get('cost_id')
     data = user.get_cost_by_id(cost_id)
     if not data:

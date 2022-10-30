@@ -12,11 +12,11 @@ def get_repo():
     if repo is None:
         session.clear()
         repo = Repository()
-        user1 = repo.get_user(repo.create_user("11", "11", "11"))
-        user2 = repo.get_user(repo.create_user("22", "22", "22"))
-        user3 = repo.get_user(repo.create_user("33", "33", "33"))
-        user4 = repo.get_user(repo.create_user("44", "44", "44"))
-        user5 = repo.get_user(repo.create_user("55", "55", "55"))
+        user1 = repo.USERS[repo.create_user("11", "11", "11")]
+        user2 = repo.USERS[repo.create_user("22", "22", "22")]
+        user3 = repo.USERS[repo.create_user("33", "33", "33")]
+        user4 = repo.USERS[repo.create_user("44", "44", "44")]
+        user5 = repo.USERS[repo.create_user("55", "55", "55")]
 
         categ_id = user1.create_category("category1", "for user 1")
         user1.create_category("category2", "for user 1")
@@ -69,9 +69,6 @@ class Repository:
                 else:
                     raise Exception("Wrong password!")
         raise Exception("Wrong email or username.")
-
-    def get_user(self, id):
-        return self.USERS[id]
 
     def create_category(self, user_id, title, description):
         for _, category in self.USERS[user_id].CATEGORIES.items():
