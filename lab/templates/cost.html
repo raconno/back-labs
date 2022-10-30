@@ -9,6 +9,7 @@ Category
 
 <h1 id="cost"></h1>
 <b id="cost_description"></b>
+<b id="creation_datetime"></b>
 <br><br>
 <form method="POST" action="delete_cost" id="delete_cost">
     <input type="button" onclick="deleteCost()" style='background-color:red' value="delete"/>
@@ -32,6 +33,7 @@ Category
     document.getElementById("description").value = data["description"]
     document.getElementById("cost").innerHTML = "Cost: " + data['money'].toString();
     document.getElementById("cost_description").innerHTML = "Description: " + data['description'].toString();
+    document.getElementById("creation_datetime").innerHTML = "Creation datetime: " + data['creation_datetime'].toString();
 
     function deleteCost() {
         if (confirm('Are you sure you want to delete this cost?')) {

@@ -153,7 +153,8 @@ class User:
             cost = self.COSTS.get(cost_id)
             return {'id': cost_id,
                     'description': cost.description,
-                    'money': cost.money}
+                    'money': cost.money,
+                    'creation_datetime': cost.creation_datetime}
         return False
 
     def get_costs_in_category(self, category_id):
