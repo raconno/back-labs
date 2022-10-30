@@ -1,0 +1,36 @@
+{%extends 'base.html'%}
+
+{% block title%}
+Category
+{%endblock%}
+
+{% block body%}
+<a href="profile" class='d-flex justify-content-end'>Profile</a>
+
+<h1 id="category"></h1>
+<b id="description"></b>
+<br><br>
+<p id="costs"></p>
+<br>
+<form method="POST" action="create_cost" id="create_cost">
+</form>
+<br>
+<div id="buttons"></div>
+<script>
+    const data = JSON.parse({{data|default("")|tojson}});
+    var text = "";
+    data['costs'].forEach(function(obj) {
+                text += "<form method=\"POST\" action=\"/cost\">\n"
+        text += "<input type=\"hidden\" id=\"id\" name=\"id\ value=\"" + obj['id'] + "\">\n"
+        text += "<input type=\"submit\" value=\"" + obj["money"] + "\" />\n"
+        text += "</form>\n"
+
+    })
+    document.getElementById("category").innerHTML = "Category: " + data['title'].toString();
+    document.getElementById("description").innerHTML = "Description: " + data['description'].toString();
+    document.getElementById("costs").innerHTML = text;
+    create_cost = '    <input type="hidden" id=\"category_id\" name=\"category_id\" value="'+ data.id + '">\n' +
+                  '    <input type="submit" value="Create cost"/>\n'
+    document.getElementById("create_cost").innerHTML = create_cost;
+</script>
+{%endblock%}

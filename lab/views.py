@@ -100,6 +100,13 @@ def create_category():
         return render_template("create_category.html", data=json.dumps({"exeption": True, "exep": str(e)}))
 
 
-@app.route("/category")
+@app.route("/category", methods=['POST'])
+@check_user_not_in_session
 def category():
-    return "dfgj"
+    repository = entities.get_repo()
+    user = repository.get_user(session['current_user'])
+    category_id = request.form.get('id')
+    data = user.get_category_by_id(category_id)
+    if not data:
+        return redirect(url_for('profile'))
+    return render_template("category.html", data=json.dumps(data))
