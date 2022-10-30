@@ -18,6 +18,11 @@ def main():
     return render_template("index.html")
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return redirect(url_for('main'))
+
+
 @app.route("/profile")
 @check_user_not_in_session
 def profile():
