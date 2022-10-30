@@ -147,3 +147,10 @@ def update_category():
                                                                         "exeption": True,
                                                                         "exep": str(e)}))
 
+
+@app.route("/all_costs")
+@check_user_not_in_session
+def all_costs():
+    all = entities.get_repo().get_all_costs(session['current_user'])
+    # print(all)
+    return render_template("all_costs.html", data=json.dumps(all))

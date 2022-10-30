@@ -94,6 +94,12 @@ class Repository:
                     raise Exception("Please choose another title")
             self.USERS[user_id].update_category(category_id, title, description)
 
+    def get_all_costs(self, user_id):
+        all = []
+        for category_id in self.USERS[user_id].CATEGORIES.keys():
+            all.append(self.USERS[user_id].get_category_by_id(category_id))
+        return all
+
 
 class User:
     def __init__(self, username, email, password):
