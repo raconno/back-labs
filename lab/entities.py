@@ -18,7 +18,7 @@ def get_repo():
         user4 = repo.get_user(repo.create_user("44", "44", "44"))
         user5 = repo.get_user(repo.create_user("55", "55", "55"))
 
-        user1.create_category("category1", "for user 1")
+        categ_id = user1.create_category("category1", "for user 1")
         user1.create_category("category2", "for user 1")
         user1.create_category("category3", "for user 1")
 
@@ -37,6 +37,10 @@ def get_repo():
         user5.create_category("category1", "for user 5")
         user5.create_category("category2", "for user 5")
         user5.create_category("category3", "for user 5")
+
+        user1.create_cost(categ_id, "argreg", 10.3)
+        user1.create_cost(categ_id, "fgds", 15)
+        user1.create_cost(categ_id, "hser", 22)
     return repo
 
 
@@ -79,19 +83,18 @@ class Repository:
 
 
 class User:
-    CATEGORY_ID = 1
-    COST_ID = 1
-
-    CATEGORIES = {}
-    COSTS = {}
-
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
         self.password = password
 
+        self.CATEGORY_ID = 1
+        self.COST_ID = 1
+        self.CATEGORIES = {}
+        self.COSTS = {}
+
     def create_category(self, title, description):
-        self.CATEGORIES[self.CATEGORY_ID] = Category(title, description)
+        self.CATEGORIES[str(self.CATEGORY_ID)] = Category(title, description)
         self.CATEGORY_ID += 1
         return self.CATEGORY_ID - 1
 
@@ -118,7 +121,7 @@ class User:
                 kwargs.pop(key)
         return kwargs
 
-    def delete_category(self, category_id):
+    def delete_category(self, category_id):  # add deletion of all costs in category also
         if self.CATEGORIES.get(category_id) is not None:
             self.CATEGORIES.pop(category_id)
             return True
@@ -126,7 +129,7 @@ class User:
             return False
 
     def create_cost(self, category_id, description, money):
-        self.COSTS[self.COST_ID] = Cost(category_id, description, money)
+        self.COSTS[str(self.COST_ID)] = Cost(str(category_id), description, str(money))
         self.COST_ID += 1
         return self.COST_ID - 1
 
