@@ -5,8 +5,9 @@ from flask import render_template, session, request, redirect, url_for
 
 def check_user_not_in_session(func):
     def inner(*args, **kwargs):
+        entities.get_repo()
         if "current_user" not in session:
-            return render_template("log_in.html")
+            return redirect(url_for('log_in'))
         return func(*args, **kwargs)
     inner.__name__ = func.__name__  # why?
     return inner
@@ -31,7 +32,7 @@ def check_sign_up():
     if "current_user" not in session:
         return render_template("sign_up.html")
     else:
-        return render_template("profile.html")
+        return redirect(url_for('profile'))
 
 
 @app.route("/sign_up", methods=['POST'])
@@ -39,7 +40,7 @@ def sign_up():
     entities.get_repo()
 
     if "current_user" in session:
-        return render_template("profile.html")
+        return redirect(url_for('profile'))
 
     try:
         repository = entities.get_repo()
@@ -54,7 +55,7 @@ def sign_up():
 def check_log_in():
     entities.get_repo()
     if "current_user" in session:
-        return render_template("profile.html")
+        return redirect(url_for('profile'))
     return render_template("log_in.html")
 
 
@@ -62,12 +63,12 @@ def check_log_in():
 def log_in():
     entities.get_repo()
     if "current_user" in session:
-        return render_template("profile.html")
+        return redirect(url_for('profile'))
 
     try:
         repository = entities.get_repo()
         session["current_user"] = repository.log_in(request.form.get('email'), request.form.get('password'))
-        return render_template("profile.html")
+        return redirect(url_for('profile'))
     except Exception as e:
         return render_template("log_in.html", data=json.dumps({"exeption": True, "exep": str(e)}))
 
@@ -78,7 +79,7 @@ def log_out():
         session.pop("current_user")
     except Exception:
         pass
-    return render_template("index.html")
+    return redirect(url_for('main'))
 
 
 @app.route("/create_category")
