@@ -51,9 +51,8 @@ class Repository:
     def create_user(self, username, email, password):
         for _, user in self.USERS.items():
             if user.username.title() == username:
-                raise Exception("Please choose another username.") #username:") + str(user.username) + "; email:" + str(user.email) + "; password:" + str(user.password)+"; cause of username:"+str(username)+"; email:"+str(email)+"; password: "+str(password))
+                raise Exception("Please choose another username.")
             if user.email.lower() == email:
-                # raise exceptions.ExistingEmail() #offer to restore password
                 raise Exception("You already have an account with such email.")
 
         new_user = User(username.title(), email.lower(), password)
@@ -140,7 +139,6 @@ class User:
 
     def delete_category(self, category_id):
         self.CATEGORIES.pop(category_id)
-        keys = self.COSTS.keys()
         for cost_id in list(self.COSTS.keys()):
             if self.COSTS[cost_id].category_id == category_id:
                 self.COSTS.pop(cost_id)
