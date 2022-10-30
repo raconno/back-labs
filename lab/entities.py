@@ -100,6 +100,10 @@ class Repository:
             all.append(self.USERS[user_id].get_category_by_id(category_id))
         return all
 
+    def update_cost(self, user_id, cost_id, money, description):
+        if self.USERS[user_id].CATEGORIES.get(cost_id) is not None:
+            self.USERS[user_id].update_cost(cost_id, money, description)
+
 
 class User:
     def __init__(self, username, email, password):
@@ -164,12 +168,9 @@ class User:
                 cost_list.append({"id": cost_id, "description": cost.description, "money": cost.money})
         return cost_list
 
-    def update_cost(self, cost_id, **kwargs):
-        for key, value in self.COSTS[cost_id].items():
-            if kwargs.get(key) is not None:
-                value = kwargs[key]
-                kwargs.pop(key)
-        return kwargs
+    def update_cost(self, cost_id, money, description):
+        self.COSTS[cost_id].money = money
+        self.COSTS[cost_id].description = description
 
     def delete_cost(self, cost_id):
         if self.COSTS.get(cost_id) is not None:

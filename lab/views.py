@@ -125,7 +125,6 @@ def delete_category():
     return redirect(url_for('profile'))
 
 
-
 @app.route("/update_category", methods=['POST'])
 @check_user_not_in_session
 def update_category():
@@ -138,7 +137,7 @@ def update_category():
                                                                         "description": description}))
     try:
         repository = entities.get_repo()
-        category_id = repository.update_category(session["current_user"], category_id, title, description)
+        repository.update_category(session["current_user"], category_id, title, description)
         return redirect(url_for('profile'))
     except Exception as e:
         return render_template("update_category.html", data=json.dumps({"category_id": category_id,
@@ -176,3 +175,17 @@ def delete_cost():
         return redirect(url_for('profile'))
     return redirect(url_for('main'))
 
+
+@app.route("/update_cost", methods=['POST'])
+@check_user_not_in_session
+def update_cost():
+    cost_id = request.form.get('cost_id')
+    money = request.form.get('money')
+    description = request.form.get('description')
+    if request.form.get('from_cost_page'):
+        return render_template("update_cost.html", data=json.dumps({"cost_id": cost_id,
+                                                                        "money": money,
+                                                                        "description": description}))
+    repository = entities.get_repo()
+    repository.update_cost(session["current_user"], cost_id, money, description)
+    return redirect(url_for('profile'))
