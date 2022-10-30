@@ -167,3 +167,12 @@ def cost():
         return redirect(url_for('profile'))
     return render_template("cost.html", data=json.dumps(data))
 
+
+@app.route("/delete_cost", methods=['POST'])
+@check_user_not_in_session
+def delete_cost():
+    repository = entities.get_repo()
+    if repository.USERS[session['current_user']].delete_cost(request.form.get('cost_id')):
+        return redirect(url_for('profile'))
+    return redirect(url_for('main'))
+
