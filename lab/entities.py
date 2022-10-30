@@ -152,7 +152,10 @@ class User:
     def get_cost_by_id(self, cost_id):
         if self.COSTS.get(cost_id) is not None:
             cost = self.COSTS.get(cost_id)
-            return {'id': cost_id, 'description': cost.description, 'money': cost.money}
+            return {'id': cost_id,
+                    'description': cost.description,
+                    'money': cost.money}
+        return False
 
     def get_costs_in_category(self, category_id):
         cost_list = []

@@ -154,3 +154,16 @@ def all_costs():
     all = entities.get_repo().get_all_costs(session['current_user'])
     # print(all)
     return render_template("all_costs.html", data=json.dumps(all))
+
+
+@app.route("/cost", methods=['POST'])
+@check_user_not_in_session
+def cost():
+    repository = entities.get_repo()
+    user = repository.get_user(session['current_user'])
+    cost_id = request.form.get('cost_id')
+    data = user.get_cost_by_id(cost_id)
+    if not data:
+        return redirect(url_for('profile'))
+    return render_template("cost.html", data=json.dumps(data))
+

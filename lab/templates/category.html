@@ -34,8 +34,8 @@ Category
     document.getElementById("description").value = data["description"]
     var text = "";
     data['costs'].forEach(function (obj) {
-        text += "<form method=\"POST\" action=\"/cost\">\n"
-        text += "<input type=\"hidden\" id=\"id\" name=\"id\ value=\"" + obj['id'] + "\">\n"
+        text += "<form method=\"POST\" action=\"cost\">\n"
+        text += "<input type=\"hidden\" id=\"cost_id\" name=\"cost_id\" value=\"" + obj['id'] + "\">\n"
         text += "<input type=\"submit\" value=\"" + obj["money"] + "\" />\n"
         text += "</form>\n"
 
