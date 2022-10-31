@@ -2,12 +2,12 @@ FROM python:3.10-slim
 
 ENV FLASK_APP=lab
 
-COPY requirements.txt /back/
+COPY requirements.txt /opt
 
-RUN python3 -m pip install -r /back/requirements.txt
+RUN python3 -m pip install -r /opt/requirements.txt
 
-COPY lab /back/lab
+COPY lab /opt/lab
 
-WORKDIR /back
+WORKDIR /opt
 
 CMD flask run --host 0.0.0.0 -p $PORT
