@@ -2,6 +2,7 @@ from datetime import datetime
 from lab import exceptions
 from collections import defaultdict
 from flask import session
+from flask_smorest import abort
 
 
 repo = None
@@ -48,57 +49,99 @@ class Repository:
     USER_ID = 1
     USERS = {}
 
+    def check_user_id(self, user_id):
+        if user_id not in self.USERS.keys():
+            abort(400, message='no user with such id.')
+
+    def check_category_id(self, user_id, category_id):
+        if category_id not in self.USERS[user_id].CATEGORIES.keys():
+            abort(400, message='such user has no such category.')
+
+    def check_cost_id(self, user_id, category_id, cost_id):
+        if cost_id not in self.USERS[user_id].COSTS[cost_id].keys():
+            abort(404, message='such user has no such cost in such category')
+
     def create_user(self, username, email, password):
         for _, user in self.USERS.items():
             if user.username.title() == username:
-                raise Exception("Please choose another username.")
+                abort(404, message='choose another username.')
             if user.email.lower() == email:
-                raise Exception("You already have an account with such email.")
+                abort(404, message='account with such email is already exists.')
 
         new_user = User(username.title(), email.lower(), password)
-        self.USERS[self.USER_ID] = new_user
+        self.USERS[str(self.USER_ID)] = new_user
         self.USER_ID += 1
-        return self.USER_ID - 1
+        return {"user_id": self.USER_ID - 1}
 
-    def log_in(self, nick, password):
-        for id, user in self.USERS.items():
-            if user.email.lower() == nick or user.username.title() == nick:
-                if user.password == password:
-                    return id
-                else:
-                    raise Exception("Wrong password!")
-        raise Exception("Wrong email or username.")
+    # def log_in(self, nick, password):
+    #     for id, user in self.USERS.items():
+    #         if user.email.lower() == nick or user.username.title() == nick:
+    #             if user.password == password:
+    #                 return id
+    #             else:
+    #                 raise Exception("Wrong password!")
+    #     raise Exception("Wrong email or username.")
 
     def create_category(self, user_id, title, description):
+        self.check_user_id(user_id)
+
         for _, category in self.USERS[user_id].CATEGORIES.items():
             if category.title == title:
-                raise Exception("Please choose another title")
-
+                abort(404, message='choose another title.')
         category_id = self.USERS[user_id].create_category(title, description)
-        return category_id
+        return {"category_id": category_id}
 
     def delete_category(self, user_id, category_id):
-        if self.USERS[user_id].CATEGORIES.get(category_id) is not None:
-            self.USERS[user_id].delete_category(category_id)
-            return True
-        return False
+        self.check_user_id(user_id)
+        self.check_category_id(user_id, category_id)
+
+        self.USERS[user_id].delete_category(category_id)
+        return {'status': True}
 
     def update_category(self, user_id, category_id, title, description):
-        if self.USERS[user_id].CATEGORIES.get(category_id) is not None:
-            for _, category in self.USERS[user_id].CATEGORIES.items():
-                if category.title == title:
-                    raise Exception("Please choose another title")
-            self.USERS[user_id].update_category(category_id, title, description)
+        self.check_user_id(user_id)
+        self.check_category_id(user_id, category_id)
+
+        for _, category in self.USERS[user_id].CATEGORIES.items():
+            if category.title == title:
+                abort(404, message='choose another title')
+
+        return self.USERS[user_id].update_category(category_id, title, description)
 
     def get_all_costs(self, user_id):
+        self.check_user_id(user_id)
+
         all = []
         for category_id in self.USERS[user_id].CATEGORIES.keys():
             all.append(self.USERS[user_id].get_category_by_id(category_id))
         return all
 
-    def update_cost(self, user_id, cost_id, money, description):
+    def get_cost(self, user_id, category_id, cost_id):
+        self.check_user_id(user_id)
+        self.check_category_id(user_id, category_id)
+        self.check_cost_id(user_id, category_id, cost_id)
+
+        return self.USERS[user_id].get_cost_by_id(cost_id)
+
+    def delete_cost(self, user_id, category_id, cost_id):
+        self.check_user_id(user_id)
+        self.check_category_id(user_id, category_id)
+        self.check_cost_id(user_id, category_id, cost_id)
+
+        return self.USERS[user_id].delete_cost(cost_id)
+
+    def update_cost(self, user_id, category_id, cost_id, money, description):
         if self.USERS[user_id].COSTS.get(str(cost_id)) is not None:
             self.USERS[user_id].update_cost(cost_id, money, description)
+
+    def create_cost(self, user_id, category_id, description, money):
+        if user_id not in self.USERS.keys():
+            abort(404, 'no user with such id.')
+
+        if category_id not in self.USERS[user_id].CATEGORIES.keys():
+            abort(404, message='such user has no such category.')
+
+        return self.USERS[user_id].create_cost(category_id, description, money)
 
 
 class User:
@@ -126,7 +169,7 @@ class User:
 
     def get_category_by_id(self, category_id):
         if self.CATEGORIES.get(category_id) is None:
-            return False
+            abort(404, message='such user has no such category.')
         category = self.CATEGORIES[category_id]
         return {"id": category_id,
                 "title": category.title,
@@ -136,6 +179,7 @@ class User:
     def update_category(self, category_id, title, description):
         self.CATEGORIES[category_id].title = title
         self.CATEGORIES[category_id].description = description
+        return {'status': True}
 
     def delete_category(self, category_id):
         self.CATEGORIES.pop(category_id)
@@ -149,13 +193,11 @@ class User:
         return self.COST_ID - 1
 
     def get_cost_by_id(self, cost_id):
-        if self.COSTS.get(cost_id) is not None:
-            cost = self.COSTS.get(cost_id)
-            return {'id': cost_id,
-                    'description': cost.description,
-                    'money': cost.money,
-                    'creation_datetime': cost.creation_datetime}
-        return False
+        cost = self.COSTS.get(cost_id)
+        return {'id': cost_id,
+                'description': cost.description,
+                'money': cost.money,
+                'creation_datetime': cost.creation_datetime}
 
     def get_costs_in_category(self, category_id):
         cost_list = []
@@ -170,11 +212,8 @@ class User:
         self.COSTS[str(cost_id)].description = description
 
     def delete_cost(self, cost_id):
-        if self.COSTS.get(cost_id) is not None:
-            self.COSTS.pop(cost_id)
-            return True
-        else:
-            return False
+        self.COSTS.pop(cost_id)
+        return {"status": True}
 
 
 class Category:
